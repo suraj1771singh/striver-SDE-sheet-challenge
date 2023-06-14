@@ -1,5 +1,7 @@
 public class Solution {
     public static LinkedListNode<Integer> cloneRandomList(LinkedListNode<Integer> head) {
+        if (head == null)
+            return null;
         LinkedListNode<Integer> dummy = new LinkedListNode(0);
         LinkedListNode<Integer> h = head;
         while (h != null) {
@@ -26,9 +28,9 @@ public class Solution {
         d = dummy;
         while (d != null) {
             h.next = d.next;
+            h = h.next;
             if (h == null)
                 break;
-            h = h.next;
             d.next = h.next;
             d = d.next;
 
