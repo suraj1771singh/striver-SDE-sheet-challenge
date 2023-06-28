@@ -1,93 +1,45 @@
-class Pair{
+import java.util.*;
 
-    BinaryTreeNode node;
-
-    int hd;
-
- 
-
-    public Pair(BinaryTreeNode val, int level){
-
-        this.node = val;
-
-        this.hd = level;
-
+public class Solution {
+    public static ArrayList<Integer> getTopView(BinaryTreeNode root) {
+        Queue<Pair> q = new LinkedList<>();
+        Map<Integer, Integer> map = new HashMap<>();
+        ArrayList<Integer> res = new ArrayList<>();
+        if (root == null)
+            return res;
+        int max = 0;
+        int min = 0;
+        q.add(new Pair(root, 0));
+        while (!q.isEmpty()) {
+            int k = q.size();
+            while (k-- > 0) {
+                Pair p = q.poll();
+                if (!map.containsKey(p.dist))
+                    map.put(p.dist, p.node.val);
+                min = Math.min(min, p.dist);
+                max = Math.max(max, p.dist);
+                if (p.node.left != null)
+                    q.add(new Pair(p.node.left, p.dist - 1));
+                if (p.node.right != null)
+                    q.add(new Pair(p.node.right, p.dist + 1));
+            }
+        }
+        for (int i = min; i <= max; i++) {
+            if (map.containsKey(i)) {
+                res.add(map.get(i));
+            }
+        }
+        return res;
     }
 
 }
 
-public class Solution {
+class Pair {
+    BinaryTreeNode node;
+    Integer dist;
 
-    public static ArrayList<Integer> getTopView(BinaryTreeNode root) {
-
-        // Write your code here.
-
-        ArrayList<Integer> res = new ArrayList<>();
-
-        if(root == null) return res;
-
- 
-
-        Map<Integer, Integer> map = new TreeMap<>();
-
-        Queue<Pair> q = new LinkedList<>();
-
- 
-
-        q.add(new Pair(root, 0));
-
- 
-
-        while(!q.isEmpty()){
-
-            Pair p = q.remove();
-
-            int level = p.hd;
-
- 
-
-            BinaryTreeNode temp = p.node;
-
- 
-
-            if(map.get(level) == null){
-
-                map.put(level, temp.val);
-
-            }
-
- 
-
-            if(temp.left != null){
-
-                q.add(new Pair(temp.left, level - 1));
-
-            }
-
- 
-
-            if(temp.right != null){
-
-                q.add(new Pair(temp.right, level + 1));
-
-            }
-
- 
-
-        }
-
- 
-
-        for(Map.Entry<Integer, Integer> entry: map.entrySet()){
-
-            res.add(entry.getValue());
-
-        }
-
- 
-
-        return res;
-
+    Pair(BinaryTreeNode a, Integer b) {
+        node = a;
+        dist = b;
     }
-
 }

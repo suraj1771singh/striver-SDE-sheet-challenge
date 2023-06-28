@@ -1,43 +1,25 @@
-public class Solution
+import java.util.*;
+import java.util.Queue;
 
-{
+public class Solution {
+    public static ArrayList<Integer> getLeftView(TreeNode<Integer> root) {
+        Queue<TreeNode<Integer>> q = new LinkedList<>();
+        ArrayList<Integer> res = new ArrayList<>();
+        if (root == null)
+            return res;
+        q.add(root);
+        while (!q.isEmpty()) {
+            int size = q.size();
+            res.add(q.peek().data);
+            while (size-- > 0) {
+                TreeNode<Integer> node = q.poll();
+                if (node.left != null)
+                    q.add(node.left);
+                if (node.right != null)
+                    q.add(node.right);
 
-    public static ArrayList<Integer> getLeftView(TreeNode<Integer> root)
-
-    {
-
-        // Write your code here.
-
-        ArrayList<Integer> list = new ArrayList<>();
-
-        makeList(root, 0, list);
-
-        return list;
-
-    }
-
-    private static void makeList(TreeNode<Integer> root, int level, ArrayList<Integer> list) {
-
-        if (root == null) {
-
-            return;
-
+            }
         }
-
-        // adding every level first element to the list
-
-        if (list.size() == level) {
-
-            // the index acts as the level
-
-            list.add(level, root.data);
-
-        }
-
-        makeList(root.left, level + 1, list);
-
-        makeList(root.right, level + 1, list);
-
+        return res;
     }
-
 }

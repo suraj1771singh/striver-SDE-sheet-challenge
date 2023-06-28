@@ -1,41 +1,45 @@
 import java.util.*;
+import java.util.Stack;
 
-class Solution {
-    public static void inorder(List<Integer> inOrder, BinaryTreeNode<Integer> root) {
-        if (root == null)
-            return;
-        inorder(inOrder, root.left);
-        inOrder.add(root.data);
-        inorder(inOrder, root.right);
-    }
-
-    public static void preorder(List<Integer> preOrder, BinaryTreeNode<Integer> root) {
-        if (root == null)
-            return;
-        preOrder.add(root.data);
-        preorder(preOrder, root.left);
-        preorder(preOrder, root.right);
-    }
-
-    public static void postorder(List<Integer> postOrder, BinaryTreeNode<Integer> root) {
-        if (root == null)
-            return;
-        postorder(postOrder, root.left);
-        postorder(postOrder, root.right);
-        postOrder.add(root.data);
-    }
-
+public class Solution {
     public static List<List<Integer>> getTreeTraversal(BinaryTreeNode<Integer> root) {
-        List<List<Integer>> res = new ArrayList<List<Integer>>();
-        List<Integer> inOrder = new ArrayList<>();
-        List<Integer> preOrder = new ArrayList<>();
-        List<Integer> postOrder = new ArrayList<>();
-        inorder(inOrder, root);
-        res.add(inOrder);
-        preorder(preOrder, root);
-        res.add(preOrder);
-        postorder(postOrder, root);
-        res.add(postOrder);
+        List<List<Integer>> res = new ArrayList<>();
+        List<Integer> postorder = new ArrayList<>();
+        List<Integer> preorder = new ArrayList<>();
+        List<Integer> inorder = new ArrayList<>();
+        if (root == null)
+            return res;
+        Stack<Pair> st = new Stack<>();
+        st.push(new Pair(root, 1));
+        while (!st.isEmpty()) {
+            Pair p = st.peek();
+            if (p.cnt == 1) {
+                st.peek().cnt++;
+                preorder.add(p.node.data);
+                if (p.node.left != null)
+                    st.push(new Pair(p.node.left, 1));
+            } else if (p.cnt == 2) {
+                st.peek().cnt++;
+                inorder.add(p.node.data);
+                if (p.node.right != null)
+                    st.push(new Pair(p.node.right, 1));
+            } else {
+                postorder.add(p.node.data);
+                st.pop();
+            }
+        }
+        res.add(inorder);
+        res.add(preorder);
+        res.add(postorder);
         return res;
     }
 }
+
+class Pair {
+    BinaryTreeNode<Integer> node;
+    int cnt;
+
+    Pair(BinaryTreeNode<Integer> a, int b) {
+        node = a;
+        cnt = b;
+    }

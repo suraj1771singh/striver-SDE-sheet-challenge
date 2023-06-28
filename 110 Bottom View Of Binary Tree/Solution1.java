@@ -2,39 +2,41 @@ import java.util.*;
 
 public class Solution {
     public static ArrayList<Integer> bottomView(BinaryTreeNode root) {
-        // Write your code here.
-        Queue<Pair> q = new ArrayDeque<>();
-        Map<Integer, Integer> map = new TreeMap<>();
-
-        q.add(new Pair(0, root));
-
+        Queue<Pair> q = new LinkedList<>();
+        Map<Integer, Integer> map = new HashMap<>();
+        ArrayList<Integer> res = new ArrayList<>();
+        int max = 0;
+        int min = 0;
+        q.add(new Pair(root, 0));
         while (!q.isEmpty()) {
-            Pair cur = q.poll();
-
-            map.put(cur.hd, cur.node.val);
-
-            if (cur.node.left != null) {
-                q.add(new Pair(cur.hd - 1, cur.node.left));
-            }
-            if (cur.node.right != null) {
-                q.add(new Pair(cur.hd + 1, cur.node.right));
+            int k = q.size();
+            while (k-- > 0) {
+                Pair p = q.poll();
+                map.put(p.dist, p.node.val);
+                min = Math.min(min, p.dist);
+                max = Math.max(max, p.dist);
+                if (p.node.left != null)
+                    q.add(new Pair(p.node.left, p.dist - 1));
+                if (p.node.right != null)
+                    q.add(new Pair(p.node.right, p.dist + 1));
             }
         }
-        ArrayList<Integer> ans = new ArrayList<>();
-
-        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
-            ans.add(entry.getValue());
+        for (int i = min; i <= max; i++) {
+            if (map.containsKey(i)) {
+                res.add(map.get(i));
+            }
         }
-        return ans;
+        return res;
     }
 
-    static class Pair {
-        int hd;
-        BinaryTreeNode node;
+}
 
-        public Pair(int hd, BinaryTreeNode node) {
-            this.hd = hd;
-            this.node = node;
-        }
+class Pair {
+    BinaryTreeNode node;
+    Integer dist;
+
+    Pair(BinaryTreeNode a, Integer b) {
+        node = a;
+        dist = b;
     }
 }
