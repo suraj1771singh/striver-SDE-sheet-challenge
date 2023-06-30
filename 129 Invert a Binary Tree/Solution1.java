@@ -2,35 +2,33 @@ import java.util.*;
 
 public class Solution {
     public static TreeNode<Integer> invertBinaryTree(TreeNode<Integer> root, TreeNode<Integer> leaf) {
-        f(root, null, true, leaf);
-        return leaf;
+        Stack<TreeNode<Integer>> st = new Stack<>();
+
+        getPath(root, leaf, st);
+        TreeNode<Integer> head = st.peek();
+        TreeNode<Integer> par = head;
+        while (!st.isEmpty()) {
+            TreeNode<Integer> p = st.pop();
+            if (p.right == head)
+                p.right = p.left;
+            p.left = null;
+            head.left = p;
+            head = p;
+
+        }
+        return par;
     }
 
-    static boolean f(TreeNode<Integer> root, TreeNode<Integer> parent, boolean isLeftChild, TreeNode<Integer> target) {
-
+    static boolean getPath(TreeNode<Integer> root, TreeNode<Integer> leaf, Stack<TreeNode<Integer>> st) {
         if (root == null)
             return false;
-
-        TreeNode<Integer> leftChild = root.left;
-        TreeNode<Integer> rightchild = root.right;
-
-        // reverse edges
-        root.left = parent;
-        root.right = leftChild;
-
-        if (root.data == target.data) {
-            // System.out.println(root.data);
+        st.push(root);
+        if (root.data.equals(leaf.data))
             return true;
-        }
-
-        if (f(leftChild, root, true, target))
+        if (getPath(root.left, leaf, st) || getPath(root.right, leaf, st))
             return true;
-        if (f(rightchild, root, false, target))
-            return true;
-
-        // reverse edges again as original
-        root.left = leftChild;
-        root.right = rightchild;
+        st.pop();
         return false;
+
     }
 }
